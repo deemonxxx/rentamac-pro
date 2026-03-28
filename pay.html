@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Payment — RentAMac</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090b; --bg2: #111113; --bg3: #18181c;
+      --border: #232329; --accent: #6366f1; --accent-hover: #818cf8;
+      --text: #f4f4f5; --text-muted: #71717a; --text-dim: #3f3f46;
+      --green: #22c55e; --yellow: #eab308; --orange: #f97316;
+      --radius: 16px; --radius-sm: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    nav {
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 17px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-back { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+
+    .pay-wrap {
+      flex: 1; display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 24px 60px; gap: 28px; flex-wrap: wrap;
+    }
+    .pay-form-col { width: 100%; max-width: 500px; }
+    .pay-info-col  { width: 100%; max-width: 320px; }
+
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px;
+    }
+    .card + .card { margin-top: 16px; }
+    .card h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .card .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+
+    /* PLAN SELECTOR */
+    .plan-selector { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .plan-option { display: none; }
+    .plan-label {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg3); border: 2px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .plan-option:checked + .plan-label {
+      border-color: var(--accent); background: rgba(99,102,241,0.07);
+    }
+    .plan-label-left { display: flex; flex-direction: column; }
+    .plan-label-name { font-size: 15px; font-weight: 700; }
+    .plan-label-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .plan-label-price { font-size: 16px; font-weight: 800; }
+
+    /* CRYPTO SELECTOR */
+    .crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+    .crypto-option { display: none; }
+    .crypto-label {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg3); border: 2px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 14px;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .crypto-option:checked + .crypto-label { border-color: var(--accent); background: rgba(99,102,241,0.07); }
+    .crypto-icon { font-size: 20px; }
+    .crypto-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .crypto-network { font-size: 11px; color: var(--text-muted); }
+
+    /* FORM */
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .form-group input, .form-group select {
+      width: 100%; background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text); font-size: 15px;
+      padding: 11px 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+
+    /* WALLET ADDRESS BOX */
+    .wallet-box {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px 18px;
+      margin: 20px 0; display: none;
+    }
+    .wallet-box.active { display: block; }
+    .wallet-box-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .wallet-address-wrap { display: flex; gap: 10px; align-items: center; }
+    .wallet-address {
+      flex: 1; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 12px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px; color: var(--text); word-break: break-all; line-height: 1.5;
+    }
+    .copy-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text-muted); border-radius: 6px;
+      padding: 10px 12px; cursor: pointer; font-size: 13px;
+      transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+    .wallet-note {
+      font-size: 12px; color: var(--text-muted); margin-top: 10px;
+      background: rgba(234,179,8,0.07); border: 1px solid rgba(234,179,8,0.2);
+      border-radius: 6px; padding: 10px 12px; line-height: 1.5;
+    }
+    .wallet-note strong { color: var(--yellow); }
+
+    /* AMOUNT BOX */
+    .amount-box {
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25);
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .amount-label { font-size: 13px; color: var(--text-muted); }
+    .amount-value { font-size: 20px; font-weight: 800; color: var(--text); }
+
+    /* CONFIRMATION FORM */
+    .confirmation-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px; }
+    .confirmation-section h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,0.4); }
+
+    .pay-note { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 10px; line-height: 1.6; }
+
+    /* INFO CARD ITEMS */
+    .info-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 8px; }
+    .info-row:last-of-type { border-bottom: none; }
+    .info-label { font-size: 13px; color: var(--text-muted); }
+    .info-value { font-size: 13px; color: var(--text); font-weight: 600; text-align: right; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+    .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
+    .badge-yellow { background: rgba(234,179,8,0.12); color: var(--yellow); }
+
+    /* STEPS */
+    .steps { margin-top: 4px; }
+    .step { display: flex; gap: 12px; margin-bottom: 16px; }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%; background: var(--accent);
+      color: #fff; font-size: 11px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .step p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+    .step strong { color: var(--text); }
+
+    footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; }
+    footer p { font-size: 12px; color: var(--text-dim); }
+    footer a { color: var(--text-muted); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .pay-wrap { padding: 20px 14px 40px; }
+      .card { padding: 20px 16px; }
+      .crypto-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Rent<span>A</span>Mac<span style="color:var(--text-dim);font-size:13px;font-weight:400"> .pro</span></a>
+  <a href="/" class="nav-back">← Back</a>
+</nav>
+
+<div class="pay-wrap">
+
+  <!-- MAIN FORM -->
+  <div class="pay-form-col">
+    <div class="card">
+      <h2>Crypto Payment</h2>
+      <p class="subtitle">Pay with Bitcoin, USDT, ETH or 50+ coins — no KYC required</p>
+
+      <!-- PLAN -->
+      <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">1. Select plan</p>
+      <div class="plan-selector">
+        <input type="radio" name="plan" id="plan-starter" value="starter" data-usd="19" class="plan-option">
+        <label for="plan-starter" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Starter</span>
+            <span class="plan-label-desc">Mac mini M2 · 8 GB · 100 GB SSD</span>
+          </div>
+          <span class="plan-label-price">$19 / mo</span>
+        </label>
+
+        <input type="radio" name="plan" id="plan-developer" value="developer" data-usd="35" class="plan-option" checked>
+        <label for="plan-developer" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Developer ★</span>
+            <span class="plan-label-desc">Mac mini M2 · 16 GB · 256 GB SSD</span>
+          </div>
+          <span class="plan-label-price">$35 / mo</span>
+        </label>
+
+        <input type="radio" name="plan" id="plan-pro" value="pro" data-usd="59" class="plan-option">
+        <label for="plan-pro" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Pro</span>
+            <span class="plan-label-desc">Mac mini M2 Max · 32 GB · 512 GB SSD</span>
+          </div>
+          <span class="plan-label-price">$59 / mo</span>
+        </label>
+      </div>
+
+      <!-- CRYPTO SELECTION -->
+      <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">2. Choose currency</p>
+      <div class="crypto-grid">
+        <input type="radio" name="crypto" id="crypto-btc" value="btc" class="crypto-option" checked>
+        <label for="crypto-btc" class="crypto-label">
+          <span class="crypto-icon">₿</span>
+          <div><div class="crypto-name">Bitcoin</div><div class="crypto-network">BTC</div></div>
+        </label>
+
+        <input type="radio" name="crypto" id="crypto-usdt-trc" value="usdt-trc20" class="crypto-option">
+        <label for="crypto-usdt-trc" class="crypto-label">
+          <span class="crypto-icon">💚</span>
+          <div><div class="crypto-name">USDT</div><div class="crypto-network">TRC20 (Tron)</div></div>
+        </label>
+
+        <input type="radio" name="crypto" id="crypto-usdt-erc" value="usdt-erc20" class="crypto-option">
+        <label for="crypto-usdt-erc" class="crypto-label">
+          <span class="crypto-icon">💜</span>
+          <div><div class="crypto-name">USDT</div><div class="crypto-network">ERC20 (Ethereum)</div></div>
+        </label>
+
+        <input type="radio" name="crypto" id="crypto-eth" value="eth" class="crypto-option">
+        <label for="crypto-eth" class="crypto-label">
+          <span class="crypto-icon">Ξ</span>
+          <div><div class="crypto-name">Ethereum</div><div class="crypto-network">ETH</div></div>
+        </label>
+      </div>
+
+      <!-- AMOUNT -->
+      <div class="amount-box">
+        <div class="amount-label">Amount to send</div>
+        <div class="amount-value" id="amountDisplay">$35.00 ≈ loading...</div>
+      </div>
+
+      <!-- WALLET ADDRESS -->
+      <!--
+        ============================================================
+        NOWPayments Integration — Wallet Addresses
+        ============================================================
+        Replace STUB addresses below with your real wallet addresses,
+        OR use NOWPayments API to generate a payment dynamically:
+
+        POST https://api.nowpayments.io/v1/payment
+        Headers: x-api-key: YOUR_NOWPAYMENTS_API_KEY
+        Body: {
+          "price_amount": 35,
+          "price_currency": "usd",
+          "pay_currency": "btc",          // or "usdttrc20", "eth", etc.
+          "order_id": "ORDER_123",
+          "order_description": "Mac mini Developer plan",
+          "ipn_callback_url": "https://rentamac.pro/webhook/nowpayments"
+        }
+        Response includes: pay_address, pay_amount, payment_id
+        ============================================================
+      -->
+      <div class="wallet-box active" id="wallet-btc">
+        <div class="wallet-box-label">Send Bitcoin (BTC) to this address</div>
+        <div class="wallet-address-wrap">
+          <div class="wallet-address" id="addr-btc">bc1q_REPLACE_WITH_YOUR_REAL_BTC_ADDRESS_HERE</div>
+          <button class="copy-btn" onclick="copyAddr('addr-btc', this)">Copy</button>
+        </div>
+        <div class="wallet-note">
+          <strong>⚠ Important:</strong> Send the <strong>exact amount</strong> shown above. Use the <strong>BTC (Native SegWit / bc1)</strong> network only. Wrong network = lost funds.
+        </div>
+      </div>
+
+      <div class="wallet-box" id="wallet-usdt-trc20">
+        <div class="wallet-box-label">Send USDT (TRC20) to this address</div>
+        <div class="wallet-address-wrap">
+          <div class="wallet-address" id="addr-usdt-trc20">T_REPLACE_WITH_YOUR_REAL_USDT_TRC20_ADDRESS_HERE</div>
+          <button class="copy-btn" onclick="copyAddr('addr-usdt-trc20', this)">Copy</button>
+        </div>
+        <div class="wallet-note">
+          <strong>⚠ Important:</strong> Use <strong>TRC20 network (Tron)</strong> only. Do not send via ERC20 to this address.
+        </div>
+      </div>
+
+      <div class="wallet-box" id="wallet-usdt-erc20">
+        <div class="wallet-box-label">Send USDT (ERC20) to this address</div>
+        <div class="wallet-address-wrap">
+          <div class="wallet-address" id="addr-usdt-erc20">0x_REPLACE_WITH_YOUR_REAL_USDT_ERC20_ADDRESS_HERE</div>
+          <button class="copy-btn" onclick="copyAddr('addr-usdt-erc20', this)">Copy</button>
+        </div>
+        <div class="wallet-note">
+          <strong>⚠ Important:</strong> Use <strong>ERC20 network (Ethereum)</strong> only. Network fee (gas) applies.
+        </div>
+      </div>
+
+      <div class="wallet-box" id="wallet-eth">
+        <div class="wallet-box-label">Send Ethereum (ETH) to this address</div>
+        <div class="wallet-address-wrap">
+          <div class="wallet-address" id="addr-eth">0x_REPLACE_WITH_YOUR_REAL_ETH_ADDRESS_HERE</div>
+          <button class="copy-btn" onclick="copyAddr('addr-eth', this)">Copy</button>
+        </div>
+        <div class="wallet-note">
+          <strong>⚠ Important:</strong> ETH on <strong>Ethereum Mainnet</strong> only. Network fee applies.
+        </div>
+      </div>
+
+      <!-- CONTACT + CONFIRMATION FORM -->
+      <div class="confirmation-section">
+        <h4>3. Fill confirmation form</h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">After sending crypto, fill in your details so we can provision your Mac mini.</p>
+
+        <div class="form-group">
+          <label>Email (for SSH credentials)</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Telegram (optional)</label>
+          <input type="text" id="telegram" placeholder="@username">
+        </div>
+        <div class="form-group">
+          <label>Transaction Hash / TX ID</label>
+          <input type="text" id="txhash" placeholder="Paste your transaction hash here">
+        </div>
+
+        <button class="btn-submit" onclick="submitConfirmation()">
+          ✅ I've sent the payment — confirm
+        </button>
+        <p class="pay-note">
+          We'll verify the transaction on-chain and send SSH credentials to your email within 15 minutes.
+          Questions? <a href="https://t.me/x100blockchain" style="color:var(--accent)">Telegram @x100blockchain</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INFO SIDEBAR -->
+  <div class="pay-info-col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:18px;">Order Summary</h2>
+      <div class="info-row">
+        <span class="info-label">Service</span>
+        <span class="info-value">RentAMac — Mac mini</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Period</span>
+        <span class="info-value">1 month</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Payment</span>
+        <span class="info-value"><span class="badge badge-green">Crypto</span></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">KYC / docs</span>
+        <span class="info-value">None required</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Access</span>
+        <span class="info-value">SSH in ~15 min</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:15px;margin-bottom:16px;">How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <p><strong>Select plan and crypto.</strong> The exact amount and wallet address will appear above.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p><strong>Send the exact amount</strong> to the displayed address. Double-check the network.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p><strong>Copy your TX hash</strong> from your wallet and paste it in the confirmation form.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <p><strong>We verify on-chain</strong> (usually 1–3 confirmations) and send SSH keys to your email.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:rgba(99,102,241,0.05);border-color:rgba(99,102,241,0.2);">
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.65;">
+        💡 <strong style="color:var(--text)">Automated payments</strong> via NOWPayments are coming soon — you'll get a dynamic address with real-time conversion rate at checkout.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 RentAMac.pro — <a href="mailto:support@rentamac.pro">support@rentamac.pro</a> · <a href="https://t.me/x100blockchain" target="_blank">Telegram</a> · <a href="/">Back to home</a></p>
+</footer>
+
+<script>
+  // Plan USD amounts
+  const PLANS = { starter: 19, developer: 35, pro: 59 };
+
+  // Stub wallet addresses — replace with real ones or NOWPayments dynamic
+  const WALLETS = {
+    'btc':        'bc1q_REPLACE_WITH_YOUR_REAL_BTC_ADDRESS_HERE',
+    'usdt-trc20': 'T_REPLACE_WITH_YOUR_REAL_USDT_TRC20_ADDRESS_HERE',
+    'usdt-erc20': '0x_REPLACE_WITH_YOUR_REAL_USDT_ERC20_ADDRESS_HERE',
+    'eth':        '0x_REPLACE_WITH_YOUR_REAL_ETH_ADDRESS_HERE',
+  };
+
+  // Approximate crypto rates (stub — replace with live API in production)
+  const STUB_RATES = { btc: 68000, 'usdt-trc20': 1, 'usdt-erc20': 1, eth: 3400 };
+
+  function getSelectedPlan() {
+    return document.querySelector('input[name="plan"]:checked');
+  }
+  function getSelectedCrypto() {
+    return document.querySelector('input[name="crypto"]:checked')?.value || 'btc';
+  }
+
+  function updateAmount() {
+    const planEl = getSelectedPlan();
+    const crypto = getSelectedCrypto();
+    const usd = planEl ? parseInt(planEl.dataset.usd) : 35;
+    const rate = STUB_RATES[crypto] || 1;
+    let amt;
+    if (crypto === 'usdt-trc20' || crypto === 'usdt-erc20') {
+      amt = usd.toFixed(2) + ' USDT';
+    } else if (crypto === 'btc') {
+      amt = (usd / rate).toFixed(6) + ' BTC';
+    } else {
+      amt = (usd / rate).toFixed(4) + ' ETH';
+    }
+    document.getElementById('amountDisplay').textContent = `$${usd}.00 ≈ ${amt}`;
+  }
+
+  function updateWalletDisplay() {
+    const crypto = getSelectedCrypto();
+    document.querySelectorAll('.wallet-box').forEach(b => b.classList.remove('active'));
+    const box = document.getElementById('wallet-' + crypto);
+    if (box) box.classList.add('active');
+    updateAmount();
+  }
+
+  document.querySelectorAll('input[name="plan"]').forEach(r => r.addEventListener('change', updateAmount));
+  document.querySelectorAll('input[name="crypto"]').forEach(r => r.addEventListener('change', updateWalletDisplay));
+
+  function copyAddr(elId, btn) {
+    const text = document.getElementById(elId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function submitConfirmation() {
+    const email = document.getElementById('email').value;
+    const txhash = document.getElementById('txhash').value;
+    if (!email) { alert('Please provide your email address.'); return; }
+    if (!txhash) { alert('Please paste your transaction hash.'); return; }
+
+    // TODO: POST to /api/confirm-payment with plan, crypto, txhash, email, telegram
+    // Backend will verify on-chain via NOWPayments or blockchain explorer API
+    alert(
+      'Confirmation submitted!\n\n' +
+      'In production: this sends a POST to your backend,\n' +
+      'which verifies the TX hash via NOWPayments or blockchain API\n' +
+      'and triggers provision.sh.\n\n' +
+      'See: backend/webhook-crypto.js and backend/nowpayments-integration.md'
+    );
+  }
+
+  // Init
+  const params = new URLSearchParams(location.search);
+  const urlPlan = params.get('plan');
+  if (urlPlan) {
+    const radio = document.getElementById('plan-' + urlPlan);
+    if (radio) radio.checked = true;
+  }
+  updateAmount();
+</script>
+</body>
+</html>
