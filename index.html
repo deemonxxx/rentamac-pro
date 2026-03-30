@@ -335,7 +335,7 @@
       <div class="feature-card">
         <div class="feature-icon">🍎</div>
         <h3>Apple Silicon — M2</h3>
-        <p>Native ARM builds. Xcode runs exactly like on your own MacBook Pro.</p>
+        <p>Native ARM builds on M4. Xcode, AI agents, OpenClaw — without buying hardware.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
@@ -371,65 +371,76 @@
   <div class="container">
     <div class="section-label">Pricing</div>
     <h2>Simple, transparent pricing</h2>
-    <p class="section-sub">No hidden fees. Pay monthly, cancel anytime.</p>
-    <div class="pricing-grid">
+    <p class="section-sub">One config — Mac mini M4, 16 GB, 256 GB SSD. Choose your billing cycle. No hidden fees.</p>
+    <div class="pricing-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
 
-      <!-- STARTER -->
+      <!-- MONTHLY -->
       <div class="plan">
-        <div class="plan-name">Starter</div>
-        <div class="plan-price"><sup>$</sup>19</div>
+        <div class="plan-name">Monthly</div>
+        <div class="plan-price"><sup>$</sup>43</div>
         <div class="plan-period">per month</div>
         <hr class="plan-divider">
         <ul class="plan-features">
-          <li>Mac mini M2, 8 GB RAM</li>
-          <li>100 GB SSD</li>
-          <li>SSH access</li>
-          <li>1 active user</li>
-          <li>100 Mbps uplink</li>
-          <li class="dim">GitHub Actions runner</li>
-          <li class="dim">Snapshots</li>
-          <li class="dim">Priority support</li>
+          <li>Mac mini M4, 16 GB RAM</li>
+          <li>256 GB SSD</li>
+          <li>SSH + VNC access</li>
+          <li>GitHub Actions runner</li>
+          <li>Telegram support</li>
+          <li>Cancel anytime</li>
         </ul>
-        <a href="/pay?plan=starter" class="plan-btn plan-btn-secondary">Choose Starter</a>
+        <a href="/pay?plan=monthly" class="plan-btn plan-btn-secondary">Choose Monthly</a>
       </div>
 
-      <!-- DEVELOPER -->
+      <!-- ANNUAL (popular) -->
       <div class="plan popular">
-        <div class="plan-badge">★ Most Popular</div>
-        <div class="plan-name">Developer</div>
-        <div class="plan-price"><sup>$</sup>35</div>
-        <div class="plan-period">per month</div>
+        <div class="plan-badge">🔥 Best Value</div>
+        <div class="plan-name">Annual</div>
+        <div class="plan-price"><sup>$</sup>34</div>
+        <div class="plan-period">per month · $415/year</div>
         <hr class="plan-divider">
         <ul class="plan-features">
-          <li>Mac mini M2, 16 GB RAM</li>
+          <li>Mac mini M4, 16 GB RAM</li>
+          <li>256 GB SSD</li>
+          <li>SSH + VNC access</li>
+          <li>GitHub Actions runner</li>
+          <li>Telegram support</li>
+          <li>Save $101 per year (20% off)</li>
+        </ul>
+        <a href="/pay?plan=annual" class="plan-btn plan-btn-primary">Choose Annual</a>
+      </div>
+
+      <!-- DAILY -->
+      <div class="plan">
+        <div class="plan-name">Daily</div>
+        <div class="plan-price"><sup>$</sup>1.90</div>
+        <div class="plan-period">per day</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li>Mac mini M4, 16 GB RAM</li>
+          <li>256 GB SSD</li>
+          <li>SSH + VNC access</li>
+          <li>GitHub Actions runner</li>
+          <li>Telegram support</li>
+          <li>Perfect for short tasks</li>
+        </ul>
+        <a href="/pay?plan=daily" class="plan-btn plan-btn-secondary">Choose Daily</a>
+      </div>
+
+      <!-- HOURLY -->
+      <div class="plan">
+        <div class="plan-name">Hourly</div>
+        <div class="plan-price"><sup>$</sup>0.10</div>
+        <div class="plan-period">per hour · min. 4h ($0.40)</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li>Mac mini M4, 16 GB RAM</li>
           <li>256 GB SSD</li>
           <li>SSH access</li>
-          <li>2 active users</li>
-          <li>300 Mbps uplink</li>
-          <li>GitHub Actions runner</li>
-          <li>Weekly snapshots</li>
-          <li class="dim">Priority support</li>
+          <li>CI/CD runner</li>
+          <li>For DevOps & one-off builds</li>
+          <li>Minimum 4 hours</li>
         </ul>
-        <a href="/pay?plan=developer" class="plan-btn plan-btn-primary">Choose Developer</a>
-      </div>
-
-      <!-- PRO -->
-      <div class="plan">
-        <div class="plan-name">Pro</div>
-        <div class="plan-price"><sup>$</sup>59</div>
-        <div class="plan-period">per month</div>
-        <hr class="plan-divider">
-        <ul class="plan-features">
-          <li>Mac mini M2 Max, 32 GB RAM</li>
-          <li>512 GB SSD</li>
-          <li>SSH + VNC access</li>
-          <li>5 active users</li>
-          <li>1 Gbps uplink</li>
-          <li>GitHub/GitLab runner</li>
-          <li>Daily snapshots</li>
-          <li>Priority 24/7 support</li>
-        </ul>
-        <a href="/pay?plan=pro" class="plan-btn plan-btn-secondary">Choose Pro</a>
+        <a href="/pay?plan=hourly" class="plan-btn plan-btn-secondary">Choose Hourly</a>
       </div>
 
     </div>
@@ -545,9 +556,10 @@
           <label for="plan">Plan</label>
           <select name="plan" id="plan" required>
             <option value="">— Select a plan —</option>
-            <option value="starter">Starter — $19/mo</option>
-            <option value="developer">Developer — $35/mo</option>
-            <option value="pro">Pro — $59/mo</option>
+            <option value="monthly">Monthly — $43/mo</option>
+            <option value="annual">Annual — $415/year ($34.6/mo, -20%)</option>
+            <option value="daily">Daily — $1.90/day</option>
+            <option value="hourly">Hourly — $0.10/hr (min. 4h)</option>
           </select>
         </div>
         <div class="form-group">
