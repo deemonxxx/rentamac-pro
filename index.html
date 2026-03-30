@@ -309,15 +309,18 @@
   <div class="hero-badge">🟢 Machines available now</div>
   <h1>Real <em>Apple Silicon</em><br>on demand</h1>
   <p class="hero-sub">
-    Rent a Mac mini with Apple M2. Build iOS and macOS apps natively,
+    Rent a Mac mini with Apple M4. Build iOS and macOS apps natively,
     run Xcode CI/CD pipelines — no hardware purchase needed.
   </p>
+  <div style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(99,102,241,0.05));border:1px solid rgba(99,102,241,0.35);border-radius:12px;padding:10px 20px;margin-bottom:32px;font-size:14px;font-weight:600;color:#c7d2fe;">
+    🤖 AI-ready: Apple Silicon M4 — perfect for OpenClaw, Ollama &amp; local LLMs
+  </div>
   <div class="hero-actions">
     <a href="#pricing" class="btn-primary">View plans →</a>
     <a href="https://t.me/x100blockchain" target="_blank" class="btn-secondary">💬 Chat on Telegram</a>
   </div>
   <div class="trust-strip">
-    <div class="trust-badge">🍎 <span>Apple M2</span> chip</div>
+    <div class="trust-badge">🍎 <span>Apple M4</span> chip</div>
     <div class="trust-badge">⚡ <span>SSH access</span> in 5 min</div>
     <div class="trust-badge">🔐 <span>Crypto</span> payments</div>
     <div class="trust-badge">🌍 <span>99%</span> uptime</div>
@@ -334,7 +337,7 @@
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🍎</div>
-        <h3>Apple Silicon — M2</h3>
+        <h3>Apple Silicon — M4</h3>
         <p>Native ARM builds on M4. Xcode, AI agents, OpenClaw — without buying hardware.</p>
       </div>
       <div class="feature-card">
@@ -362,6 +365,11 @@
         <h3>Crypto Payments</h3>
         <p>Pay with Bitcoin, USDT, ETH or other crypto. No KYC, no bank required.</p>
       </div>
+      <div class="feature-card" style="border-color:rgba(99,102,241,0.4);background:linear-gradient(135deg,rgba(99,102,241,0.08),var(--bg2));">
+        <div class="feature-icon">🤖</div>
+        <h3>AI &amp; OpenClaw Ready</h3>
+        <p>Run OpenClaw agents, Ollama, LLaMA 3, Mistral natively on Apple Silicon M4. 16 GB RAM handles models up to 13B parameters.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -377,7 +385,7 @@
       <!-- MONTHLY -->
       <div class="plan">
         <div class="plan-name">Monthly</div>
-        <div class="plan-price"><sup>$</sup>43</div>
+        <div class="plan-price"><sup>$</sup>48</div>
         <div class="plan-period">per month</div>
         <hr class="plan-divider">
         <ul class="plan-features">
@@ -395,8 +403,8 @@
       <div class="plan popular">
         <div class="plan-badge">🔥 Best Value</div>
         <div class="plan-name">Annual</div>
-        <div class="plan-price"><sup>$</sup>34</div>
-        <div class="plan-period">per month · $415/year</div>
+        <div class="plan-price"><sup>$</sup>41</div>
+        <div class="plan-period">per month · $492/year</div>
         <hr class="plan-divider">
         <ul class="plan-features">
           <li>Mac mini M4, 16 GB RAM</li>
@@ -404,7 +412,7 @@
           <li>SSH + VNC access</li>
           <li>GitHub Actions runner</li>
           <li>Telegram support</li>
-          <li>Save $101 per year (20% off)</li>
+          <li>Save $84 per year (15% off)</li>
         </ul>
         <a href="/pay?plan=annual" class="plan-btn plan-btn-primary">Choose Annual</a>
       </div>
@@ -412,7 +420,7 @@
       <!-- DAILY -->
       <div class="plan">
         <div class="plan-name">Daily</div>
-        <div class="plan-price"><sup>$</sup>1.90</div>
+        <div class="plan-price"><sup>$</sup>2.10</div>
         <div class="plan-period">per day</div>
         <hr class="plan-divider">
         <ul class="plan-features">
@@ -429,8 +437,8 @@
       <!-- HOURLY -->
       <div class="plan">
         <div class="plan-name">Hourly</div>
-        <div class="plan-price"><sup>$</sup>0.10</div>
-        <div class="plan-period">per hour · min. 4h ($0.40)</div>
+        <div class="plan-price"><sup>$</sup>2</div>
+        <div class="plan-period">per hour · min. 4h ($8)</div>
         <hr class="plan-divider">
         <ul class="plan-features">
           <li>Mac mini M4, 16 GB RAM</li>
@@ -538,6 +546,11 @@
         <div class="faq-a">Just message us on Telegram before your next billing cycle. No cancellation fees, no questions asked. Your data is kept for 3 days after disconnection.</div>
       </div>
 
+      <div class="faq-item">
+        <button class="faq-q">Can I run OpenClaw or AI models?<span class="arrow">+</span></button>
+        <div class="faq-a">Absolutely. Mac mini M4 with 16 GB RAM handles up to 13B parameter models natively (LLaMA 3, Mistral, Gemma 2). OpenClaw installs via standard instructions. No emulation — pure Apple Silicon performance.</div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -556,10 +569,10 @@
           <label for="plan">Plan</label>
           <select name="plan" id="plan" required>
             <option value="">— Select a plan —</option>
-            <option value="monthly">Monthly — $43/mo</option>
-            <option value="annual">Annual — $415/year ($34.6/mo, -20%)</option>
-            <option value="daily">Daily — $1.90/day</option>
-            <option value="hourly">Hourly — $0.10/hr (min. 4h)</option>
+            <option value="monthly">Monthly — $48/mo</option>
+            <option value="annual">Annual — $492/year ($41/mo, -15%)</option>
+            <option value="daily">Daily — $2.10/day</option>
+            <option value="hourly">Hourly — $2/hr (min. 4h, $8)</option>
           </select>
         </div>
         <div class="form-group">
