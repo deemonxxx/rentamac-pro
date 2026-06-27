@@ -58,9 +58,10 @@
       border-color: var(--accent); background: rgba(99,102,241,0.07);
     }
     .plan-label-left { display: flex; flex-direction: column; }
-    .plan-label-name { font-size: 15px; font-weight: 700; }
+    .plan-label-name { font-size: 15px; font-weight: 700; color: var(--text); }
     .plan-label-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .plan-label-price { font-size: 16px; font-weight: 800; }
+    .plan-label-price { font-size: 16px; font-weight: 800; color: var(--text); text-align: right; }
+    .plan-label-price small { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
 
     /* CRYPTO SELECTOR */
     .crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
@@ -147,7 +148,6 @@
     .info-value { font-size: 13px; color: var(--text); font-weight: 600; text-align: right; }
     .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
     .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
-    .badge-yellow { background: rgba(234,179,8,0.12); color: var(--yellow); }
 
     /* STEPS */
     .steps { margin-top: 4px; }
@@ -184,36 +184,45 @@
   <div class="pay-form-col">
     <div class="card">
       <h2>Crypto Payment</h2>
-      <p class="subtitle">Pay with Bitcoin, USDT, ETH or 50+ coins — no KYC required</p>
+      <p class="subtitle">Mac mini M4 · 16 GB · 256 GB SSD — choose your billing cycle</p>
 
       <!-- PLAN -->
       <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">1. Select plan</p>
       <div class="plan-selector">
-        <input type="radio" name="plan" id="plan-starter" value="starter" data-usd="19" class="plan-option">
-        <label for="plan-starter" class="plan-label">
+        <input type="radio" name="plan" id="plan-monthly" value="monthly" data-usd="48" class="plan-option">
+        <label for="plan-monthly" class="plan-label">
           <div class="plan-label-left">
-            <span class="plan-label-name">Starter</span>
-            <span class="plan-label-desc">Mac mini M2 · 8 GB · 100 GB SSD</span>
+            <span class="plan-label-name">Monthly</span>
+            <span class="plan-label-desc">Cancel anytime</span>
           </div>
-          <span class="plan-label-price">$19 / mo</span>
+          <span class="plan-label-price"><small>per month</small>$48</span>
         </label>
 
-        <input type="radio" name="plan" id="plan-developer" value="developer" data-usd="35" class="plan-option" checked>
-        <label for="plan-developer" class="plan-label">
+        <input type="radio" name="plan" id="plan-annual" value="annual" data-usd="492" class="plan-option" checked>
+        <label for="plan-annual" class="plan-label">
           <div class="plan-label-left">
-            <span class="plan-label-name">Developer ★</span>
-            <span class="plan-label-desc">Mac mini M2 · 16 GB · 256 GB SSD</span>
+            <span class="plan-label-name">Annual 🔥</span>
+            <span class="plan-label-desc">Save 15% · $41/mo</span>
           </div>
-          <span class="plan-label-price">$35 / mo</span>
+          <span class="plan-label-price"><small>per year</small>$492</span>
         </label>
 
-        <input type="radio" name="plan" id="plan-pro" value="pro" data-usd="59" class="plan-option">
-        <label for="plan-pro" class="plan-label">
+        <input type="radio" name="plan" id="plan-daily" value="daily" data-usd="2.10" class="plan-option">
+        <label for="plan-daily" class="plan-label">
           <div class="plan-label-left">
-            <span class="plan-label-name">Pro</span>
-            <span class="plan-label-desc">Mac mini M2 Max · 32 GB · 512 GB SSD</span>
+            <span class="plan-label-name">Daily</span>
+            <span class="plan-label-desc">For short tasks & testing</span>
           </div>
-          <span class="plan-label-price">$59 / mo</span>
+          <span class="plan-label-price"><small>per day</small>$2.10</span>
+        </label>
+
+        <input type="radio" name="plan" id="plan-hourly" value="hourly" data-usd="2" class="plan-option">
+        <label for="plan-hourly" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Hourly</span>
+            <span class="plan-label-desc">Min. 4 hours ($8) · for DevOps</span>
+          </div>
+          <span class="plan-label-price"><small>per hour</small>$2</span>
         </label>
       </div>
 
@@ -248,7 +257,7 @@
       <!-- AMOUNT -->
       <div class="amount-box">
         <div class="amount-label">Amount to send</div>
-        <div class="amount-value" id="amountDisplay">$35.00 ≈ loading...</div>
+        <div class="amount-value" id="amountDisplay">$492.00 ≈ loading...</div>
       </div>
 
       <!-- WALLET ADDRESS -->
@@ -262,11 +271,11 @@
         POST https://api.nowpayments.io/v1/payment
         Headers: x-api-key: YOUR_NOWPAYMENTS_API_KEY
         Body: {
-          "price_amount": 35,
+          "price_amount": 48,
           "price_currency": "usd",
-          "pay_currency": "btc",          // or "usdttrc20", "eth", etc.
+          "pay_currency": "btc",
           "order_id": "ORDER_123",
-          "order_description": "Mac mini Developer plan",
+          "order_description": "Mac mini M4 monthly rental",
           "ipn_callback_url": "https://rentamac.pro/webhook/nowpayments"
         }
         Response includes: pay_address, pay_amount, payment_id
@@ -351,12 +360,16 @@
     <div class="card">
       <h2 style="font-size:16px;margin-bottom:18px;">Order Summary</h2>
       <div class="info-row">
-        <span class="info-label">Service</span>
-        <span class="info-value">RentAMac — Mac mini</span>
+        <span class="info-label">Configuration</span>
+        <span class="info-value">Mac mini M4 · 16 GB · 256 GB SSD</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Plan</span>
+        <span class="info-value" id="summaryPlan">Annual</span>
       </div>
       <div class="info-row">
         <span class="info-label">Period</span>
-        <span class="info-value">1 month</span>
+        <span class="info-value" id="summaryPeriod">1 year</span>
       </div>
       <div class="info-row">
         <span class="info-label">Payment</span>
@@ -408,8 +421,13 @@
 </footer>
 
 <script>
-  // Plan USD amounts
-  const PLANS = { starter: 19, developer: 35, pro: 59 };
+  // Plans — match landing page rentamac.pro
+  const PLANS = {
+    monthly: { name: 'Monthly', usd: 48, period: '1 month' },
+    annual:  { name: 'Annual',  usd: 492, period: '1 year' },
+    daily:   { name: 'Daily',   usd: 2.10, period: '1 day' },
+    hourly:  { name: 'Hourly',  usd: 2, period: '1 hour', note: 'min. 4 hours ($8)' },
+  };
 
   // Stub wallet addresses — replace with real ones or NOWPayments dynamic
   const WALLETS = {
@@ -432,7 +450,7 @@
   function updateAmount() {
     const planEl = getSelectedPlan();
     const crypto = getSelectedCrypto();
-    const usd = planEl ? parseInt(planEl.dataset.usd) : 35;
+    const usd = planEl ? parseFloat(planEl.dataset.usd) : 48;
     const rate = STUB_RATES[crypto] || 1;
     let amt;
     if (crypto === 'usdt-trc20' || crypto === 'usdt-erc20') {
@@ -442,7 +460,15 @@
     } else {
       amt = (usd / rate).toFixed(4) + ' ETH';
     }
-    document.getElementById('amountDisplay').textContent = `$${usd}.00 ≈ ${amt}`;
+    document.getElementById('amountDisplay').textContent = `$${usd.toFixed(2)} ≈ ${amt}`;
+
+    // Update summary sidebar
+    const planKey = planEl ? planEl.value : 'annual';
+    const plan = PLANS[planKey];
+    if (plan) {
+      document.getElementById('summaryPlan').textContent = plan.name;
+      document.getElementById('summaryPeriod').textContent = plan.note ? plan.period + ' · ' + plan.note : plan.period;
+    }
   }
 
   function updateWalletDisplay() {
@@ -489,7 +515,7 @@
     const radio = document.getElementById('plan-' + urlPlan);
     if (radio) radio.checked = true;
   }
-  updateAmount();
+  updateWalletDisplay();
 </script>
 </body>
 </html>
