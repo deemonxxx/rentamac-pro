@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Payment — RentAMac</title>
+  <title>Pay — RentAMac</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #09090b; --bg2: #111113; --bg3: #18181c;
       --border: #232329; --accent: #6366f1; --accent-hover: #818cf8;
       --text: #f4f4f5; --text-muted: #71717a; --text-dim: #3f3f46;
-      --green: #22c55e; --yellow: #eab308; --orange: #f97316;
+      --green: #22c55e; --yellow: #eab308;
       --radius: 16px; --radius-sm: 10px;
     }
     html { scroll-behavior: smooth; }
@@ -63,59 +63,15 @@
     .plan-label-price { font-size: 16px; font-weight: 800; color: var(--text); text-align: right; }
     .plan-label-price small { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
 
-    /* CRYPTO SELECTOR */
-    .crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
-    .crypto-option { display: none; }
-    .crypto-label {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--bg3); border: 2px solid var(--border);
-      border-radius: var(--radius-sm); padding: 12px 14px;
-      cursor: pointer; transition: border-color 0.2s;
-    }
-    .crypto-option:checked + .crypto-label { border-color: var(--accent); background: rgba(99,102,241,0.07); }
-    .crypto-icon { font-size: 20px; }
-    .crypto-name { font-size: 13px; font-weight: 700; color: var(--text); }
-    .crypto-network { font-size: 11px; color: var(--text-muted); }
-
     /* FORM */
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%; background: var(--bg3); border: 1px solid var(--border);
       border-radius: var(--radius-sm); color: var(--text); font-size: 15px;
       padding: 11px 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
     }
-    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
-
-    /* WALLET ADDRESS BOX */
-    .wallet-box {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 16px 18px;
-      margin: 20px 0; display: none;
-    }
-    .wallet-box.active { display: block; }
-    .wallet-box-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-    .wallet-address-wrap { display: flex; gap: 10px; align-items: center; }
-    .wallet-address {
-      flex: 1; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 10px 12px;
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      font-size: 12px; color: var(--text); word-break: break-all; line-height: 1.5;
-    }
-    .copy-btn {
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text-muted); border-radius: 6px;
-      padding: 10px 12px; cursor: pointer; font-size: 13px;
-      transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
-    }
-    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .copy-btn.copied { border-color: var(--green); color: var(--green); }
-    .wallet-note {
-      font-size: 12px; color: var(--text-muted); margin-top: 10px;
-      background: rgba(234,179,8,0.07); border: 1px solid rgba(234,179,8,0.2);
-      border-radius: 6px; padding: 10px 12px; line-height: 1.5;
-    }
-    .wallet-note strong { color: var(--yellow); }
+    .form-group input:focus { border-color: var(--accent); }
 
     /* AMOUNT BOX */
     .amount-box {
@@ -127,10 +83,6 @@
     .amount-label { font-size: 13px; color: var(--text-muted); }
     .amount-value { font-size: 20px; font-weight: 800; color: var(--text); }
 
-    /* CONFIRMATION FORM */
-    .confirmation-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px; }
-    .confirmation-section h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
-
     .btn-submit {
       width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none;
       border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
@@ -138,8 +90,10 @@
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,0.4); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .pay-note { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 10px; line-height: 1.6; }
+    .pay-note a { color: var(--accent); text-decoration: none; }
 
     /* INFO CARD ITEMS */
     .info-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 8px; }
@@ -160,6 +114,12 @@
     .step p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
     .step strong { color: var(--text); }
 
+    /* SUCCESS */
+    .success-box { text-align: center; padding: 60px 0; }
+    .success-icon { font-size: 64px; margin-bottom: 20px; }
+    .success-box h2 { font-size: 24px; margin-bottom: 12px; }
+    .success-box p { color: var(--text-muted); font-size: 16px; line-height: 1.6; }
+
     footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; }
     footer p { font-size: 12px; color: var(--text-dim); }
     footer a { color: var(--text-muted); text-decoration: none; }
@@ -167,7 +127,6 @@
     @media (max-width: 600px) {
       .pay-wrap { padding: 20px 14px 40px; }
       .card { padding: 20px 16px; }
-      .crypto-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -182,176 +141,83 @@
 
   <!-- MAIN FORM -->
   <div class="pay-form-col">
-    <div class="card">
-      <h2>Crypto Payment</h2>
-      <p class="subtitle">Mac mini M4 · 16 GB · 256 GB SSD — choose your billing cycle</p>
+    <div class="card" id="formCard">
+      <h2>Rent a Mac mini</h2>
+      <p class="subtitle">Mac mini · Apple Silicon · SSH access — choose your plan and submit</p>
 
       <!-- PLAN -->
       <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">1. Select plan</p>
       <div class="plan-selector">
-        <input type="radio" name="plan" id="plan-monthly" value="monthly" data-usd="48" class="plan-option">
-        <label for="plan-monthly" class="plan-label">
-          <div class="plan-label-left">
-            <span class="plan-label-name">Monthly</span>
-            <span class="plan-label-desc">Cancel anytime</span>
-          </div>
-          <span class="plan-label-price"><small>per month</small>$48</span>
-        </label>
-
-        <input type="radio" name="plan" id="plan-annual" value="annual" data-usd="492" class="plan-option" checked>
-        <label for="plan-annual" class="plan-label">
-          <div class="plan-label-left">
-            <span class="plan-label-name">Annual 🔥</span>
-            <span class="plan-label-desc">Save 15% · $41/mo</span>
-          </div>
-          <span class="plan-label-price"><small>per year</small>$492</span>
-        </label>
-
-        <input type="radio" name="plan" id="plan-daily" value="daily" data-usd="2.10" class="plan-option">
+        <input type="radio" name="plan" id="plan-daily" value="daily" data-usd="4.20" class="plan-option">
         <label for="plan-daily" class="plan-label">
           <div class="plan-label-left">
             <span class="plan-label-name">Daily</span>
             <span class="plan-label-desc">For short tasks & testing</span>
           </div>
-          <span class="plan-label-price"><small>per day</small>$2.10</span>
+          <span class="plan-label-price"><small>per day</small>$4.20</span>
         </label>
 
-        <input type="radio" name="plan" id="plan-hourly" value="hourly" data-usd="2" class="plan-option">
-        <label for="plan-hourly" class="plan-label">
+        <input type="radio" name="plan" id="plan-weekly" value="weekly" data-usd="27" class="plan-option">
+        <label for="plan-weekly" class="plan-label">
           <div class="plan-label-left">
-            <span class="plan-label-name">Hourly</span>
-            <span class="plan-label-desc">Min. 4 hours ($8) · for DevOps</span>
+            <span class="plan-label-name">Weekly 🔥</span>
+            <span class="plan-label-desc">Save 10% · $3.86/day</span>
           </div>
-          <span class="plan-label-price"><small>per hour</small>$2</span>
-        </label>
-      </div>
-
-      <!-- CRYPTO SELECTION -->
-      <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">2. Choose currency</p>
-      <div class="crypto-grid">
-        <input type="radio" name="crypto" id="crypto-btc" value="btc" class="crypto-option" checked>
-        <label for="crypto-btc" class="crypto-label">
-          <span class="crypto-icon">₿</span>
-          <div><div class="crypto-name">Bitcoin</div><div class="crypto-network">BTC</div></div>
+          <span class="plan-label-price"><small>per week</small>$27</span>
         </label>
 
-        <input type="radio" name="crypto" id="crypto-usdt-trc" value="usdt-trc20" class="crypto-option">
-        <label for="crypto-usdt-trc" class="crypto-label">
-          <span class="crypto-icon">💚</span>
-          <div><div class="crypto-name">USDT</div><div class="crypto-network">TRC20 (Tron)</div></div>
+        <input type="radio" name="plan" id="plan-monthly" value="monthly" data-usd="108" class="plan-option" checked>
+        <label for="plan-monthly" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Monthly</span>
+            <span class="plan-label-desc">Save 15% · $3.60/day</span>
+          </div>
+          <span class="plan-label-price"><small>per month</small>$108</span>
         </label>
 
-        <input type="radio" name="crypto" id="crypto-usdt-erc" value="usdt-erc20" class="crypto-option">
-        <label for="crypto-usdt-erc" class="crypto-label">
-          <span class="crypto-icon">💜</span>
-          <div><div class="crypto-name">USDT</div><div class="crypto-network">ERC20 (Ethereum)</div></div>
-        </label>
-
-        <input type="radio" name="crypto" id="crypto-eth" value="eth" class="crypto-option">
-        <label for="crypto-eth" class="crypto-label">
-          <span class="crypto-icon">Ξ</span>
-          <div><div class="crypto-name">Ethereum</div><div class="crypto-network">ETH</div></div>
+        <input type="radio" name="plan" id="plan-annual" value="annual" data-usd="1080" class="plan-option">
+        <label for="plan-annual" class="plan-label">
+          <div class="plan-label-left">
+            <span class="plan-label-name">Annual 🏆</span>
+            <span class="plan-label-desc">Save 30% · $90/month</span>
+          </div>
+          <span class="plan-label-price"><small>per year</small>$1080</span>
         </label>
       </div>
 
       <!-- AMOUNT -->
       <div class="amount-box">
-        <div class="amount-label">Amount to send</div>
-        <div class="amount-value" id="amountDisplay">$492.00 ≈ loading...</div>
+        <div class="amount-label">Total amount</div>
+        <div class="amount-value" id="amountDisplay">$108.00 USDT</div>
       </div>
 
-      <!-- WALLET ADDRESS -->
-      <!--
-        ============================================================
-        NOWPayments Integration — Wallet Addresses
-        ============================================================
-        Replace STUB addresses below with your real wallet addresses,
-        OR use NOWPayments API to generate a payment dynamically:
+      <!-- CONTACT FORM -->
+      <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">2. Your details</p>
 
-        POST https://api.nowpayments.io/v1/payment
-        Headers: x-api-key: YOUR_NOWPAYMENTS_API_KEY
-        Body: {
-          "price_amount": 48,
-          "price_currency": "usd",
-          "pay_currency": "btc",
-          "order_id": "ORDER_123",
-          "order_description": "Mac mini M4 monthly rental",
-          "ipn_callback_url": "https://rentamac.pro/webhook/nowpayments"
-        }
-        Response includes: pay_address, pay_amount, payment_id
-        ============================================================
-      -->
-      <div class="wallet-box active" id="wallet-btc">
-        <div class="wallet-box-label">Send Bitcoin (BTC) to this address</div>
-        <div class="wallet-address-wrap">
-          <div class="wallet-address" id="addr-btc">bc1q_REPLACE_WITH_YOUR_REAL_BTC_ADDRESS_HERE</div>
-          <button class="copy-btn" onclick="copyAddr('addr-btc', this)">Copy</button>
-        </div>
-        <div class="wallet-note">
-          <strong>⚠ Important:</strong> Send the <strong>exact amount</strong> shown above. Use the <strong>BTC (Native SegWit / bc1)</strong> network only. Wrong network = lost funds.
-        </div>
+      <div class="form-group">
+        <label>Name / Company</label>
+        <input type="text" id="name" placeholder="John Appleseed" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Telegram (optional)</label>
+        <input type="text" id="telegram" placeholder="@username">
+      </div>
+      <div class="form-group">
+        <label>Comment (optional)</label>
+        <input type="text" id="comment" placeholder="Any special requirements">
       </div>
 
-      <div class="wallet-box" id="wallet-usdt-trc20">
-        <div class="wallet-box-label">Send USDT (TRC20) to this address</div>
-        <div class="wallet-address-wrap">
-          <div class="wallet-address" id="addr-usdt-trc20">T_REPLACE_WITH_YOUR_REAL_USDT_TRC20_ADDRESS_HERE</div>
-          <button class="copy-btn" onclick="copyAddr('addr-usdt-trc20', this)">Copy</button>
-        </div>
-        <div class="wallet-note">
-          <strong>⚠ Important:</strong> Use <strong>TRC20 network (Tron)</strong> only. Do not send via ERC20 to this address.
-        </div>
-      </div>
-
-      <div class="wallet-box" id="wallet-usdt-erc20">
-        <div class="wallet-box-label">Send USDT (ERC20) to this address</div>
-        <div class="wallet-address-wrap">
-          <div class="wallet-address" id="addr-usdt-erc20">0x_REPLACE_WITH_YOUR_REAL_USDT_ERC20_ADDRESS_HERE</div>
-          <button class="copy-btn" onclick="copyAddr('addr-usdt-erc20', this)">Copy</button>
-        </div>
-        <div class="wallet-note">
-          <strong>⚠ Important:</strong> Use <strong>ERC20 network (Ethereum)</strong> only. Network fee (gas) applies.
-        </div>
-      </div>
-
-      <div class="wallet-box" id="wallet-eth">
-        <div class="wallet-box-label">Send Ethereum (ETH) to this address</div>
-        <div class="wallet-address-wrap">
-          <div class="wallet-address" id="addr-eth">0x_REPLACE_WITH_YOUR_REAL_ETH_ADDRESS_HERE</div>
-          <button class="copy-btn" onclick="copyAddr('addr-eth', this)">Copy</button>
-        </div>
-        <div class="wallet-note">
-          <strong>⚠ Important:</strong> ETH on <strong>Ethereum Mainnet</strong> only. Network fee applies.
-        </div>
-      </div>
-
-      <!-- CONTACT + CONFIRMATION FORM -->
-      <div class="confirmation-section">
-        <h4>3. Fill confirmation form</h4>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">After sending crypto, fill in your details so we can provision your Mac mini.</p>
-
-        <div class="form-group">
-          <label>Email (for SSH credentials)</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
-        </div>
-        <div class="form-group">
-          <label>Telegram (optional)</label>
-          <input type="text" id="telegram" placeholder="@username">
-        </div>
-        <div class="form-group">
-          <label>Transaction Hash / TX ID</label>
-          <input type="text" id="txhash" placeholder="Paste your transaction hash here">
-        </div>
-
-        <button class="btn-submit" onclick="submitConfirmation()">
-          ✅ I've sent the payment — confirm
-        </button>
-        <p class="pay-note">
-          We'll verify the transaction on-chain and send SSH credentials to your email within 15 minutes.
-          Questions? <a href="https://t.me/x100blockchain" style="color:var(--accent)">Telegram @x100blockchain</a>
-        </p>
-      </div>
-
+      <button class="btn-submit" onclick="submitOrder()">
+        📨 Submit request
+      </button>
+      <p class="pay-note">
+        We'll contact you via Telegram or email within 15 minutes to arrange payment and setup.<br>
+        Questions? <a href="https://t.me/x100blockchain">Telegram @x100blockchain</a>
+      </p>
     </div>
   </div>
 
@@ -361,15 +227,19 @@
       <h2 style="font-size:16px;margin-bottom:18px;">Order Summary</h2>
       <div class="info-row">
         <span class="info-label">Configuration</span>
-        <span class="info-value">Mac mini M4 · 16 GB · 256 GB SSD</span>
+        <span class="info-value">Mac mini · Apple Silicon</span>
       </div>
       <div class="info-row">
         <span class="info-label">Plan</span>
-        <span class="info-value" id="summaryPlan">Annual</span>
+        <span class="info-value" id="summaryPlan">Monthly</span>
       </div>
       <div class="info-row">
         <span class="info-label">Period</span>
-        <span class="info-value" id="summaryPeriod">1 year</span>
+        <span class="info-value" id="summaryPeriod">1 month</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Amount</span>
+        <span class="info-value" id="summaryAmount">$108 USDT</span>
       </div>
       <div class="info-row">
         <span class="info-label">Payment</span>
@@ -390,27 +260,21 @@
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <p><strong>Select plan and crypto.</strong> The exact amount and wallet address will appear above.</p>
+          <p><strong>Choose a plan</strong> and fill in your details.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <p><strong>Send the exact amount</strong> to the displayed address. Double-check the network.</p>
+          <p><strong>We contact you</strong> via Telegram within 15 minutes.</p>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <p><strong>Copy your TX hash</strong> from your wallet and paste it in the confirmation form.</p>
+          <p><strong>Pay with crypto</strong> (USDT, BTC, ETH) — we send you the wallet address.</p>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <p><strong>We verify on-chain</strong> (usually 1–3 confirmations) and send SSH keys to your email.</p>
+          <p><strong>Get SSH access</strong> to your Mac mini immediately after payment confirmation.</p>
         </div>
       </div>
-    </div>
-
-    <div class="card" style="background:rgba(99,102,241,0.05);border-color:rgba(99,102,241,0.2);">
-      <p style="font-size:13px;color:var(--text-muted);line-height:1.65;">
-        💡 <strong style="color:var(--text)">Automated payments</strong> via NOWPayments are coming soon — you'll get a dynamic address with real-time conversion rate at checkout.
-      </p>
     </div>
   </div>
 
@@ -421,101 +285,89 @@
 </footer>
 
 <script>
-  // Plans — match landing page rentamac.pro
   const PLANS = {
-    monthly: { name: 'Monthly', usd: 48, period: '1 month' },
-    annual:  { name: 'Annual',  usd: 492, period: '1 year' },
-    daily:   { name: 'Daily',   usd: 2.10, period: '1 day' },
-    hourly:  { name: 'Hourly',  usd: 2, period: '1 hour', note: 'min. 4 hours ($8)' },
+    daily:   { name: 'Daily',   usd: 4.20, period: '1 day' },
+    weekly:  { name: 'Weekly',  usd: 27,   period: '1 week' },
+    monthly: { name: 'Monthly', usd: 108,  period: '1 month' },
+    annual:  { name: 'Annual',  usd: 1080, period: '1 year' },
   };
-
-  // Stub wallet addresses — replace with real ones or NOWPayments dynamic
-  const WALLETS = {
-    'btc':        'bc1q_REPLACE_WITH_YOUR_REAL_BTC_ADDRESS_HERE',
-    'usdt-trc20': 'T_REPLACE_WITH_YOUR_REAL_USDT_TRC20_ADDRESS_HERE',
-    'usdt-erc20': '0x_REPLACE_WITH_YOUR_REAL_USDT_ERC20_ADDRESS_HERE',
-    'eth':        '0x_REPLACE_WITH_YOUR_REAL_ETH_ADDRESS_HERE',
-  };
-
-  // Approximate crypto rates (stub — replace with live API in production)
-  const STUB_RATES = { btc: 68000, 'usdt-trc20': 1, 'usdt-erc20': 1, eth: 3400 };
 
   function getSelectedPlan() {
     return document.querySelector('input[name="plan"]:checked');
   }
-  function getSelectedCrypto() {
-    return document.querySelector('input[name="crypto"]:checked')?.value || 'btc';
-  }
 
   function updateAmount() {
     const planEl = getSelectedPlan();
-    const crypto = getSelectedCrypto();
-    const usd = planEl ? parseFloat(planEl.dataset.usd) : 48;
-    const rate = STUB_RATES[crypto] || 1;
-    let amt;
-    if (crypto === 'usdt-trc20' || crypto === 'usdt-erc20') {
-      amt = usd.toFixed(2) + ' USDT';
-    } else if (crypto === 'btc') {
-      amt = (usd / rate).toFixed(6) + ' BTC';
-    } else {
-      amt = (usd / rate).toFixed(4) + ' ETH';
-    }
-    document.getElementById('amountDisplay').textContent = `$${usd.toFixed(2)} ≈ ${amt}`;
+    const key = planEl ? planEl.value : 'monthly';
+    const plan = PLANS[key];
+    if (!plan) return;
 
-    // Update summary sidebar
-    const planKey = planEl ? planEl.value : 'annual';
-    const plan = PLANS[planKey];
-    if (plan) {
-      document.getElementById('summaryPlan').textContent = plan.name;
-      document.getElementById('summaryPeriod').textContent = plan.note ? plan.period + ' · ' + plan.note : plan.period;
-    }
-  }
-
-  function updateWalletDisplay() {
-    const crypto = getSelectedCrypto();
-    document.querySelectorAll('.wallet-box').forEach(b => b.classList.remove('active'));
-    const box = document.getElementById('wallet-' + crypto);
-    if (box) box.classList.add('active');
-    updateAmount();
+    document.getElementById('amountDisplay').textContent = '$' + plan.usd.toFixed(2) + ' USDT';
+    document.getElementById('summaryPlan').textContent = plan.name;
+    document.getElementById('summaryPeriod').textContent = plan.period;
+    document.getElementById('summaryAmount').textContent = '$' + plan.usd.toFixed(2) + ' USDT';
   }
 
   document.querySelectorAll('input[name="plan"]').forEach(r => r.addEventListener('change', updateAmount));
-  document.querySelectorAll('input[name="crypto"]').forEach(r => r.addEventListener('change', updateWalletDisplay));
 
-  function copyAddr(elId, btn) {
-    const text = document.getElementById(elId).textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'Copied ✓';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    });
-  }
-
-  function submitConfirmation() {
-    const email = document.getElementById('email').value;
-    const txhash = document.getElementById('txhash').value;
-    if (!email) { alert('Please provide your email address.'); return; }
-    if (!txhash) { alert('Please paste your transaction hash.'); return; }
-
-    // TODO: POST to /api/confirm-payment with plan, crypto, txhash, email, telegram
-    // Backend will verify on-chain via NOWPayments or blockchain explorer API
-    alert(
-      'Confirmation submitted!\n\n' +
-      'In production: this sends a POST to your backend,\n' +
-      'which verifies the TX hash via NOWPayments or blockchain API\n' +
-      'and triggers provision.sh.\n\n' +
-      'See: backend/webhook-crypto.js and backend/nowpayments-integration.md'
-    );
-  }
-
-  // Init
+  // Pre-select plan from URL
   const params = new URLSearchParams(location.search);
   const urlPlan = params.get('plan');
-  if (urlPlan) {
+  if (urlPlan && PLANS[urlPlan]) {
     const radio = document.getElementById('plan-' + urlPlan);
-    if (radio) radio.checked = true;
+    if (radio) { radio.checked = true; }
   }
-  updateWalletDisplay();
+  updateAmount();
+
+  function escapeMd(text) {
+    return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+  }
+
+  async function submitOrder() {
+    const planEl = getSelectedPlan();
+    const plan = planEl ? planEl.value : 'monthly';
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const telegram = document.getElementById('telegram').value.trim();
+    const comment = document.getElementById('comment').value.trim();
+
+    if (!name) { alert('Please enter your name.'); return; }
+    if (!email) { alert('Please enter your email.'); return; }
+
+    const btn = document.querySelector('.btn-submit');
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Submitting...';
+
+    try {
+      const resp = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, name, email, telegram, comment }),
+      });
+
+      const result = await resp.json();
+
+      if (!resp.ok) {
+        alert(result.error || 'Submission error');
+        return;
+      }
+
+      document.getElementById('formCard').innerHTML = `
+        <div class="success-box">
+          <div class="success-icon">✅</div>
+          <h2>Request submitted!</h2>
+          <p>We'll contact you via Telegram or email within 15 minutes.<br>Check your messages.</p>
+        </div>
+      `;
+
+    } catch (err) {
+      alert('Network error. Please try again later.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    }
+  }
 </script>
 </body>
 </html>
